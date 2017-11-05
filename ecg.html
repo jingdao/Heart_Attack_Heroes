@@ -1,0 +1,47 @@
+<head>
+  <!-- Plotly.js -->
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+	<script>
+		function updateGraph() {
+			var xmlHttp = new XMLHttpRequest();
+			xmlHttp.onreadystatechange = function() { 
+//				if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+//					callback(xmlHttp.responseText);
+				console.log(xmlHttp.responseText.split(','));
+				ecg = xmlHttp.responseText.split(',');
+				xdata = []
+				ydata = []
+				for (i=0;i<ecg.length;i++) {
+					xdata.push(i);
+					ydata.push(parseInt(ecg[i]))
+				}
+				var trace1 = {
+				  x: xdata,
+				  y: ydata,
+				  type: 'scatter',
+					line: {
+						color: 'rgb(255,0,0)',
+						width: 3
+					  }
+				};
+				var data = [trace1];
+				Plotly.newPlot('myDiv', data);
+			}
+			xmlHttp.open("GET", "http://ec2-54-91-183-193.compute-1.amazonaws.com:8080/ecg", true); // true for asynchronous 
+			xmlHttp.send(null);
+		}
+		setInterval(updateGraph, 2000);
+	</script>
+	<style>
+		body {
+			vertical-align: middle;
+			text-align: center;
+		}
+	</style>
+</head>
+
+<body>
+  <br><br>
+  <h1> Heart Rate Monitor</h1> 
+  <div id="myDiv"><!-- Plotly chart will be drawn inside this DIV --></div>
+</body>
